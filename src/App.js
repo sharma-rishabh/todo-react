@@ -1,8 +1,9 @@
-import { Link, Route, Routes, useParams } from 'react-router-dom';
-import './App.css';
-import { useEffect, useState } from 'react';
+import { Link, Route, Routes, useParams } from "react-router-dom";
+import "./App.css";
+import { useEffect, useState } from "react";
+import { api } from "./api";
 
-function TodoItem({ todo }) { 
+function TodoItem({ todo }) {
   return (
     <div>
       <h1>{todo.title}</h1>
@@ -12,40 +13,36 @@ function TodoItem({ todo }) {
 }
 
 function Todo() {
-  const {id} = useParams()
+  const { id } = useParams();
   const [todo, setTodo] = useState(null);
   useEffect(() => {
-    fetch(`/api/todo/${id-1}`).then(res => res.json()).then(data => {
-      setTodo(data);
-    })
+    api.TodoService.getTodo(id).then((todo) => {
+      setTodo(todo);
+    });
   }, [id]);
-  return ( 
-    <div>
-      {todo ? <TodoItem todo={todo}/> : <div>Loading...</div>}
-    </div>
-  );
-
+  return <div>{todo ? <TodoItem todo={todo} /> : <div>Loading...</div>}</div>;
 }
 
-
-function TodoApp() { 
+function TodoApp() {
   const [todos, setTodos] = useState([]);
-  
+
   useEffect(() => {
-    fetch('/api/all-todos').then(res => res.json()).then(data => {
-      setTodos(data);
-    })
+    api.TodoService.getAllTodos().then((todos) => {
+      setTodos(todos);
+    });
   }, []);
   return (
     <div>
       <h1>Todo List</h1>
-      {
-        todos.map(todo => {
-          return (
-            <Link to={`/todo/${todo.id}`}><div>{todo.id} {todo.title}</div></Link>
-          );
-        })
-      }
+      {todos.map((todo) => {
+        return (
+          <Link to={`/todo/${todo.id}`}>
+            <div>
+              {todo.id} {todo.title}
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
@@ -56,7 +53,6 @@ function App() {
       <Route path="/" element={<TodoApp />} />
       <Route path="/todo/:id" element={<Todo />} />
     </Routes>
-    // <TodoApp />
   );
 }
 
