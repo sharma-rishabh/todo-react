@@ -1,17 +1,15 @@
-import { Todo } from "./Todo.js";
-
-export const api = {
+const getApi = (url = '') => { 
+ return {
   TodoService: {
     getTodo: async (id) => {
-      const response = await fetch(`/api/todo/${id}`);
-      const data = await response.json();
-      return new Todo(data);
+      return  await fetch(`${url}/api/todo/${id}`);
     },
 
     getAllTodos: async () => {
-      const response = await fetch("/api/all-todos");
-      const todos = await response.json();
-      return todos.map((todo) => new Todo(todo));
+      const response = await fetch(`${url}/api/all-todos`);
+      return await response.json();
     },
   },
 };
+}
+export { getApi };
