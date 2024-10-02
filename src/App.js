@@ -1,7 +1,10 @@
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { api } from "./api";
+import { getApi } from "./api";
+import { Todo } from "./Todo";
+
+const api = getApi();
 
 function TodoItem({ todo }) {
   return (
@@ -12,12 +15,12 @@ function TodoItem({ todo }) {
   );
 }
 
-function Todo() {
+function TodoPage() {
   const { id } = useParams();
   const [todo, setTodo] = useState(null);
   useEffect(() => {
-    api.TodoService.getTodo(id).then((todo) => {
-      setTodo(todo);
+    api.TodoService.getTodo(id).then((res) => res.json()).then((todo) => {
+      setTodo(new Todo(todo));
     });
   }, [id]);
   return <div>{todo ? <TodoItem todo={todo} /> : <div>Loading...</div>}</div>;
@@ -28,7 +31,7 @@ function TodoApp() {
 
   useEffect(() => {
     api.TodoService.getAllTodos().then((todos) => {
-      setTodos(todos);
+      setTodos(todos.map((todo) => new Todo(todo)));
     });
   }, []);
   return (
@@ -51,7 +54,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<TodoApp />} />
-      <Route path="/todo/:id" element={<Todo />} />
+      <Route path="/todo/:id" element={<TodoPage />} />
     </Routes>
   );
 }
