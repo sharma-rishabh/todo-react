@@ -45,7 +45,7 @@ const InputBox = ({ initialValue, onSave, onCancel }) => {
   );
 };
 
-const Task = ({ task, onComplete, onEdit, onDelete }) => {
+const Task = ({ task, onComplete, onEdit, onDelete, onDrag, onDrop }) => {
   const [isEditing, setIsEditing] = useState(false);
   const onEditComplete = (newTitle) => {
     onEdit(task.id, newTitle);
@@ -58,7 +58,13 @@ const Task = ({ task, onComplete, onEdit, onDelete }) => {
       onCancel={() => setIsEditing(false)}
     />
   ) : (
-    <div>
+    <div
+      draggable={true}
+      onDragStart={onDrag}
+      onDrop={onDrop}
+      onDragOver={(e) => e.preventDefault()}
+      id={task.id}
+    >
       <label>
         <input
           type="checkbox"
@@ -75,6 +81,7 @@ const Task = ({ task, onComplete, onEdit, onDelete }) => {
 
 function TaskList({ tasks, todoId }) {
   const [taskList, dispatch] = useReducer(taskReducer, tasks);
+  const [dragId, setDragId] = useState(null);
   const onComplete = (id) => {
     api.TodoLocal.setCompleted(todoId, id).then(({ id: markedId }) => {
       console.log(markedId);
@@ -86,18 +93,30 @@ function TaskList({ tasks, todoId }) {
   };
   const onDelete = (id) => dispatch({ type: "delete", id });
   const onSave = (title) => dispatch({ type: "add", title });
-
+  const onDrag = (e) => {
+    setDragId(+e.currentTarget.id);
+  };
+  const onDrop = (e) => {
+    const dropId = +e.currentTarget.id;
+    const newPriority = taskList.find((task) => task.id === dropId).priority;
+    dispatch({ type: "priority-update", id: +dragId, newPriority });
+  };
+  console.log(taskList);
   return (
     <div>
-      {taskList.map((task) => (
-        <Task
-          task={task}
-          onComplete={onComplete}
-          key={task.id}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
+      {taskList
+        .sort((a, b) => a.priority - b.priority)
+        .map((task) => (
+          <Task
+            task={task}
+            onComplete={onComplete}
+            key={task.id}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onDrag={onDrag}
+            onDrop={onDrop}
+          />
+        ))}
       <InputBox onSave={onSave} onCancel={() => {}} initialValue={""} />
     </div>
   );
@@ -123,8 +142,34 @@ const taskReducer = (state, action) => {
           title: action.title,
           completed: false,
           deleted: false,
+          priority: state.length + 1,
         },
       ];
+    case "priority-update":
+      const task = state.find((task) => task.id === action.id);
+      if (task.priority === action.newPriority) return state;
+      const originalPriority = task.priority;
+      const isPriorityUpgraded = task.priority > action.newPriority;
+      return state
+        .sort((a, b) => a.priority - b.priority)
+        .map((task) => {
+          if (task.id === action.id) {
+            task.priority = action.newPriority;
+          } else if (
+            isPriorityUpgraded &&
+            task.priority >= action.newPriority &&
+            task.priority < originalPriority
+          ) {
+            task.priority += 1;
+          } else if (
+            !isPriorityUpgraded &&
+            task.priority <= action.newPriority &&
+            task.priority > originalPriority
+          ) {
+            task.priority -= 1;
+          }
+          return task;
+        });
     default:
       return state;
   }
