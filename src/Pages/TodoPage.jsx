@@ -10,7 +10,7 @@ function TodoPage() {
   const api = getApi();
 
   useEffect(() => {
-    api.TodoLocal.getTodoList(+id).then((todo) => {
+    api.TodoService.getTodo(+id).then((res) => res.json()).then((todo) => {
       setTodo(new Todo(todo));
     });
   }, [id]);

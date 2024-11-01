@@ -11,31 +11,50 @@ function TaskList({ tasks, todoId }) {
   const api = getApi();
 
   const onComplete = (id) => {
-    api.TodoLocal.setCompleted(todoId, id).then(({ id: markedId }) => {
+    api.TodoService.toggleCompleted(todoId, id).then((res) => res.json()).then(({ id: markedId }) => {
       console.log(markedId);
       dispatch({ type: "toggle-complete", id: markedId });
     });
   };
 
   const onEdit = (id, newTitle) => {
-    dispatch({ type: "edit", id, title: newTitle });
+    api.TodoService.editTaskTitle(todoId, id, newTitle).then((res) => res.json()).then((task) => {
+      dispatch({ type: "edit", id, title: newTitle });
+    });
   };
 
-  const onDelete = (id) => dispatch({ type: "delete", id });
-  const onSave = (title) => dispatch({ type: "add", title });
+  const onDelete = (id) => {
+    api.TodoService.deleteTask(todoId, id)
+      .then((res) => res.json())
+      .then((tasks) => {
+        dispatch({ type: "delete", tasks })
+      });
+  };
+
+  const onSave = (title) => {
+    api.TodoService.addTask(todoId, title)
+      .then((res) => res.json())
+      .then((task) => {
+        dispatch({ type: "add", task });
+    });
+  };
   const onDrag = (e) => {
     setDragId(+e.currentTarget.id);
   };
   const onDrop = (e) => {
     const dropId = +e.currentTarget.id;
     const newPriority = taskList.find((task) => task.id === dropId).priority;
-    dispatch({ type: "priority-update", id: +dragId, newPriority });
+
+    api.TodoService.updatePriority(todoId, dragId, newPriority).then((res) => res.json()).then((tasks) => {
+        dispatch({ type: "priority-update", tasks });
+     });
   };
 
   return (
     <div>
       {taskList
         .sort((a, b) => a.priority - b.priority)
+        .filter((task) => !task.deleted)
         .map((task) => (
           <Task
             task={task}

@@ -9,43 +9,11 @@ const taskReducer = (state, action) => {
         task.id === action.id ? { ...task, title: action.title } : task
       );
     case "delete":
-      return state.filter((task) => task.id !== action.id);
+      return action.tasks;
     case "add":
-      return [
-        ...state,
-        {
-          id: state.length + 1,
-          title: action.title,
-          completed: false,
-          deleted: false,
-          priority: state.length + 1,
-        },
-      ];
+      return [...state, action.task];
     case "priority-update":
-      const task = state.find((task) => task.id === action.id);
-      if (task.priority === action.newPriority) return state;
-      const originalPriority = task.priority;
-      const isPriorityUpgraded = task.priority > action.newPriority;
-      return state
-        .sort((a, b) => a.priority - b.priority)
-        .map((task) => {
-          if (task.id === action.id) {
-            task.priority = action.newPriority;
-          } else if (
-            isPriorityUpgraded &&
-            task.priority >= action.newPriority &&
-            task.priority < originalPriority
-          ) {
-            task.priority += 1;
-          } else if (
-            !isPriorityUpgraded &&
-            task.priority <= action.newPriority &&
-            task.priority > originalPriority
-          ) {
-            task.priority -= 1;
-          }
-          return task;
-        });
+      return action.tasks;
     default:
       return state;
   }

@@ -146,6 +146,51 @@ const getApi = (url = "") => {
           },
         });
       },
+      toggleCompleted: async (todoId, taskId) => {
+        return await fetch(`${url}/api/toggle-completed/${todoId}/${taskId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      addTask: async (todoId, title) => {
+        return await fetch(`${url}/api/add-task/${todoId}`, {
+          method: "POST",
+          body: JSON.stringify({ title }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      editTaskTitle: async (todoId, taskId, title) => {
+        return await fetch(`${url}/api/edit-task-title/${todoId}/${taskId}`, {
+          method: "PUT",
+          body: JSON.stringify({ title }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      deleteTask: async (todoId, taskId) => {
+        return await fetch(`${url}/api/delete-task/${todoId}/${taskId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      updatePriority: async (todoId, taskId, newPriority) => {
+        return await fetch(
+          `${url}/api/update-task-priority/${todoId}/${taskId}/${newPriority}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      },
     },
     TodoLocal: {
       getTitles: async () => {
