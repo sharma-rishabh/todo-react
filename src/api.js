@@ -120,7 +120,6 @@ const getApi = (url = "") => {
       },
 
       addTodo: async (title) => {
-        console.log(JSON.stringify({ title }));
         return await fetch(`${url}/api/add-todo`, {
           method: "POST",
           body: JSON.stringify({ title }),

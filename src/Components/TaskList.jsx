@@ -12,7 +12,6 @@ function TaskList({ tasks, todoId }) {
 
   const onComplete = (id) => {
     api.TodoService.toggleCompleted(todoId, id).then((res) => res.json()).then(({ id: markedId }) => {
-      console.log(markedId);
       dispatch({ type: "toggle-complete", id: markedId });
     });
   };
