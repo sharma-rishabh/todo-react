@@ -3,9 +3,7 @@ const titlesReducer = (state, action) => {
     case "add":
       return [...state, action.title];
     case "delete":
-      return state.map((title) =>
-        title.id === action.id ? { ...title, deleted: true } : title
-      );
+      return action.titles;
     case "edit":
       return state.map((title) =>
         title.id === action.id ? { ...title, title: action.title } : title

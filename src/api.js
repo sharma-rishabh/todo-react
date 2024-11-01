@@ -118,6 +118,34 @@ const getApi = (url = "") => {
         const response = await fetch(`${url}/api/all-todos`);
         return await response.json();
       },
+
+      addTodo: async (title) => {
+        console.log(JSON.stringify({ title }));
+        return await fetch(`${url}/api/add-todo`, {
+          method: "POST",
+          body: JSON.stringify({ title }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      editTitle: async (id, title) => {
+        return await fetch(`${url}/api/edit-title/${id}`, {
+          method: "PUT",
+          body: JSON.stringify({ title }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
+      deleteTitle: async (id) => {
+        return await fetch(`${url}/api/delete-title/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      },
     },
     TodoLocal: {
       getTitles: async () => {

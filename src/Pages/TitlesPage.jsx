@@ -8,7 +8,7 @@ function TitlesPage() {
   const api = getApi();
 
   useEffect(() => {
-    api.TodoLocal.getTitles().then((titles) => {
+    api.TodoService.getAllTodos().then((titles) => {
       setTitles(titles.map((title) => new Title(title)));
     });
   }, []);
