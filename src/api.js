@@ -30,6 +30,7 @@ const getApi = (url = "") => {
           body: JSON.stringify({ title }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -39,6 +40,7 @@ const getApi = (url = "") => {
           body: JSON.stringify({ title }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -47,6 +49,7 @@ const getApi = (url = "") => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -55,6 +58,7 @@ const getApi = (url = "") => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -64,6 +68,7 @@ const getApi = (url = "") => {
           body: JSON.stringify({ title }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -73,6 +78,7 @@ const getApi = (url = "") => {
           body: JSON.stringify({ title }),
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -81,6 +87,7 @@ const getApi = (url = "") => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: token,
           },
         });
       },
@@ -91,6 +98,7 @@ const getApi = (url = "") => {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: token,
             },
           }
         );
